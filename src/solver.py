@@ -3,6 +3,7 @@ from typing import Any
 import json
 from pathlib import Path
 import os
+from openai import OpenAI
 
 DATA_PATH = Path(os.getenv("DATA_PATH", "data/convfinqa_dataset.json"))
 
@@ -14,7 +15,7 @@ def _records() -> dict[str, dict[str, Any]]:
     return {record["id"]: record for split in data.values() for record in split}
  
  
-def get_doc(record_id: str) -> tuple[str, str, Table]:
+def get_doc(record_id: str) -> tuple[str, str, str]:
     """Return (pre_text, post_text, table) for one record.
  
     Only doc is returned. The record also holds dialogue, with gold programs
@@ -32,6 +33,14 @@ def solver(question, history, record_id):
     A simple solver function that takes a question, history, and record_id
     and returns a response. This is a placeholder for the actual implementation.
     """
+    pre_text, post_text, table = get_doc(record_id)
+    client = OpenAI()
 
+    response = client.responses.create(
+    model="gpt-5.6",
+    input="Write a one-sentence bedtime story about a unicorn.",
+    )
+    
+    print(response.output_text)
     dsl_answer = "subtract(206588, 181001), divide(#0, 181001)"
     return dsl_answer

@@ -4,6 +4,10 @@ Main typer app for ConvFinQA
 
 import typer
 from rich import print as rich_print
+from solver import solver
+from calculator import calculator
+
+
 
 app = typer.Typer(
     name="main",
@@ -24,11 +28,11 @@ def chat(
 
         if message.strip().lower() in {"exit", "quit"}:
             break
-
         # TODO: YOUR CODE HERE
-        response = "RESPONSE"
-        rich_print(f"[blue][bold]assistant:[/bold] {response}[/blue]")
-        history.append({"user": message, "assistant": response})
+        generated_answer = solver(message, history, record_id)
+        calculated_answer = calculator(generated_answer)
+        rich_print(f"[blue][bold]assistant:[/bold] {calculated_answer}[/blue] {generated_answer}")
+        history.append({"user": message, "assistant": generated_answer})
 
 
 @app.command()
